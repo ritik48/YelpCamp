@@ -32,6 +32,12 @@ app.get("/campgrounds/new", (req, res) => {
     res.render('campgrounds/new.ejs');
 })
 
+app.get('/campgrounds/:id/edit', async (req, res) => {
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    res.render('campgrounds/edit.ejs', { campground });
+})
+
 app.post('/campgrounds', async (req, res) => {
     // console.log(req.body);
     const { campground } = req.body;
@@ -44,6 +50,26 @@ app.get("/campgrounds/:id", async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
     res.render('campgrounds/show.ejs', { campground });
+})
+
+app.patch('/campgrounds/:id/edit', async (req, res) => {
+    const { id } = req.params;
+
+    const { campground } = req.body;
+
+    const c = await Campground.findByIdAndUpdate(id, {$set: {
+        title: campground.title,
+        location: campground.location,
+        image: campground.image,
+        price: campground.price,
+        description: campground.description
+    }});
+
+    console.log(c);
+
+    res.redirect('/campgrounds');
+
+    
 })
 
 app.delete("/campgrounds/:id", async (req, res) => {

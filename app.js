@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const ejsMate=require('ejs-mate');
 const methodOverride = require('method-override');
-const Joi = require('joi')
+const campgroundSchema = require('./schemas.js');
 
 mongoose.set('strictQuery', false);
 const path=require('path');
@@ -23,6 +23,18 @@ app.set('views', path.join(__dirname,'views'));
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({extended: true}));
 
+const validateCampground = (req, res, next) => {
+    const { error } = campgroundSchema.validate(req.body);
+    if(error) {
+        const msg = error.details.map(err => err.message).join(" ");
+        throw new ExpressError(msg, 400);
+    }
+    else {
+        next();
+    }
+}
+
+
 app.get('/home', (req, res) => {
     res.send('<h1>Home</h1>');
 })
@@ -42,25 +54,8 @@ app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
     res.render('campgrounds/edit.ejs', { campground });
 }));
 
-app.post('/campgrounds', catchAsync(async (req, res) => {
-
-    const campgroundSchema = Joi.object({
-        campground: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            description: Joi.string().required(),
-            image: Joi.string().required(),
-            location: Joi.string().required()
-        }).required()
-    })
-
-    const { error } = campgroundSchema.validate(req.body);
-    if(error) {
-        const msg = error.details.map(err => err.message).join(" ");
-        throw new ExpressError(msg, 400);
-    }
+app.post('/campgrounds', validateCampground,catchAsync(async (req, res) => {
     const { campground } = req.body;
-    console.log(campground);
 
     const c = new Campground(campground);
     await c.save();
@@ -73,7 +68,7 @@ app.get("/campgrounds/:id", catchAsync(async (req, res) => {
     res.render('campgrounds/show.ejs', { campground });
 }));
 
-app.patch('/campgrounds/:id/edit', catchAsync(async (req, res, next) => {
+app.patch('/campgrounds/:id/edit', validateCampground, catchAsync(async (req, res, next) => {
 
     const { id } = req.params;
     const { campground } = req.body;

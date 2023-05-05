@@ -117,7 +117,7 @@ app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async(req, res) => {
 
 
 
-// its next will call the next middleware which will then send status and message as response
+// its next will call the next middleware which will then send status and message as response .
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found !!!', 404));

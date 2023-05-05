@@ -6,7 +6,9 @@ const campgroundSchema = require('./schemas.js');
 
 mongoose.set('strictQuery', false);
 const path=require('path');
+
 const Campground=require('./models/campground');
+const Review = require('./models/review');
 
 const ExpressError = require('./utils/ExpressError');
 const catchAsync = require('./utils/catchAsync');
@@ -64,7 +66,7 @@ app.post('/campgrounds', validateCampground,catchAsync(async (req, res) => {
 
 app.get("/campgrounds/:id", catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id);
+    const campground = await Campground.findById(id).populate('reviews');
     res.render('campgrounds/show.ejs', { campground });
 }));
 
@@ -90,6 +92,30 @@ app.delete("/campgrounds/:id", catchAsync(async (req, res) => {
 
     res.redirect('/campgrounds');
 }));
+
+// Reviews routes
+
+app.post('/campgrounds/:id/reviews', async (req, res) => {
+    const review = new Review(req.body.review);
+    const campground = await Campground.findById(req.params.id);
+
+    campground.reviews.push(review);
+
+    await review.save();
+    await campground.save();
+
+    res.redirect(`/campgrounds/${req.params.id}`);
+});
+
+app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async(req, res) => {
+    await Review.findByIdAndDelete(req.params.reviewId);
+    await Campground.updateOne({_id:req.params.id}, {$pull: {reviews: req.params.reviewId}},{new: true});
+    
+    res.redirect(`/campgrounds/${req.params.id}`);
+}));
+
+
+
 
 // its next will call the next middleware which will then send status and message as response
 

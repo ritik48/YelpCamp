@@ -2,16 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const ejsMate=require('ejs-mate');
 const methodOverride = require('method-override');
-const { campgroundSchema, reviewSchema } = require('./schemas.js');
+const ExpressError = require('./utils/ExpressError');
+const campgroundRoutes = require('./Routes/campground');
+const reviewRoutes = require('./Routes/review');
 
 mongoose.set('strictQuery', false);
 const path=require('path');
 
-const Campground=require('./models/campground');
-const Review = require('./models/review');
-
-const ExpressError = require('./utils/ExpressError');
-const catchAsync = require('./utils/catchAsync');
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp')
 .then(() => console.log("DATABASE CONNECTED."))
@@ -27,109 +24,10 @@ app.use(methodOverride('_method'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const validateCampground = (req, res, next) => {
-    const { error } = campgroundSchema.validate(req.body);
-    if(error) {
-        const msg = error.details.map(err => err.message).join(" ");
-        throw new ExpressError(msg, 400);
-    }
-    else {
-        next();
-    }
-}
 
-const validateReview = (req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if(error) {
-        const msg = error.details.map(err => err.message).join(" ");
-        throw new ExpressError(msg, 400);
-    } else {
-        next();
-    }
-}
-
-
-app.get('/home', (req, res) => {
-    res.send('<h1>Home</h1>');
-})
-
-app.get("/campgrounds", catchAsync(async (req, res) => {
-    const campgrounds=await Campground.find({});
-    res.render('campgrounds/home.ejs', { campgrounds });
-}));
-
-app.get("/campgrounds/new", (req, res) => {
-    res.render('campgrounds/new.ejs');
-})
-
-app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id);
-    res.render('campgrounds/edit.ejs', { campground });
-}));
-
-app.post('/campgrounds', validateCampground,catchAsync(async (req, res) => {
-    const { campground } = req.body;
-
-    const c = new Campground(campground);
-    await c.save();
-    res.redirect('/campgrounds');
-}));
-
-app.get("/campgrounds/:id", catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id).populate('reviews');
-    res.render('campgrounds/show.ejs', { campground });
-}));
-
-app.patch('/campgrounds/:id/edit', validateCampground, catchAsync(async (req, res, next) => {
-
-    const { id } = req.params;
-    const { campground } = req.body;
-
-    const c = await Campground.findByIdAndUpdate(id, {$set: {
-        title: campground.title,
-        location: campground.location,
-        image: campground.image,
-        price: campground.price,
-        description: campground.description
-    }});
-
-    res.redirect('/campgrounds');
-}));
-
-app.delete("/campgrounds/:id", catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findByIdAndDelete(id);
-
-    res.redirect('/campgrounds');
-}));
-
-// Reviews routes
-
-app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
-    const review = new Review(req.body.review);
-    const campground = await Campground.findById(req.params.id);
-
-    campground.reviews.push(review);
-
-    await review.save();
-    await campground.save();
-
-    res.redirect(`/campgrounds/${req.params.id}`);
-}));
-
-app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async(req, res) => {
-    await Review.findByIdAndDelete(req.params.reviewId);
-    await Campground.updateOne({_id:req.params.id}, {$pull: {reviews: req.params.reviewId}},{new: true});
-    
-    res.redirect(`/campgrounds/${req.params.id}`);
-}));
-
-
-
-
-// its next will call the next middleware which will then send status and message as response .
+app.use('/campgrounds', campgroundRoutes);
+app.use('/campgrounds/:id/reviews', reviewRoutes)
+ 
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found !!!', 404));

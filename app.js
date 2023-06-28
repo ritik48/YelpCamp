@@ -6,7 +6,7 @@ const ExpressError = require('./utils/ExpressError');
 
 const campgroundRoutes = require('./Routes/campground');
 const reviewRoutes = require('./Routes/review');
-const userRoutes = require('./Routes/users');
+const userRoutes = require('./Routes/users'); 
 
 const session = require('express-session');
 const flash = require('connect-flash');

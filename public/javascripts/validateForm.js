@@ -1,5 +1,7 @@
 const forms = document.querySelectorAll('.needs-validation')
 
+bsCustomFileInput.init()
+
 // Loop over them and prevent submission
 Array.from(forms).forEach(form => {
     form.addEventListener('submit', event => {

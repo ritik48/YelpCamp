@@ -10,4 +10,10 @@ zoom: 9, // starting zoom
 
 const marker = new mapboxgl.Marker()
 .setLngLat(campground.geometry.coordinates)
+.setPopup(
+    new mapboxgl.Popup()
+        .setHTML(
+            `<h4>${campground.title}</h4><p>${campground.location}</p>`
+    )
+) 
 .addTo(map);

@@ -12,6 +12,10 @@ imageSchema.virtual('thumbnail').get(function () {
     return this.url.replace('/upload', '/upload/w_200');
 })
 
+// to include virtuals data when document is converted to json. For example
+// if you pass document to res.json() , virtuals will not be included by default
+const opts = { toJSON: { virtuals: true } };
+
 const campgroundSchema = new Schema({
     title:String,
     price: Number,
@@ -39,7 +43,13 @@ const campgroundSchema = new Schema({
             required: true
         }
     }
-});
+}, opts);
+
+campgroundSchema.virtual('properties.markup').get(function () {
+    return `<strong>
+            <a href="/campgrounds/${this._id}">${this.title}</a>
+            <strong>`;
+})
 
 campgroundSchema.post('findOneAndDelete', async function (doc) {
     if(doc) {

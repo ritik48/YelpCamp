@@ -12,6 +12,10 @@ imageSchema.virtual('thumbnail').get(function () {
     return this.url.replace('/upload', '/upload/w_200');
 })
 
+imageSchema.virtual('resize').get(function () {
+    return this.url.replace('/upload', '/upload/c_fill,w_500,h_300')
+})
+
 // to include virtuals data when document is converted to json. For example
 // if you pass document to res.json() , virtuals will not be included by default
 const opts = { toJSON: { virtuals: true } };

@@ -21,7 +21,10 @@ module.exports.registerUser = async (req, res, next) => {
     }
 }
 
-module.exports.renderLoginForm = (req, res) => {
+module.exports.renderLoginForm = (req, res, next) => {
+    if(req.isAuthenticated()) {
+        return res.redirect('/campgrounds');
+    }
     res.render('user/login');
 }
 

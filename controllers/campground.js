@@ -7,8 +7,31 @@ const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
 
 module.exports.renderIndex = async (req, res) => {
-    const campgrounds=await Campground.find({});
-    res.render('campgrounds/home.ejs', { campgrounds });
+    let limit = 10;
+
+    let page = parseInt(req.query.page);
+    if(!page) page = 1;
+    
+    const totalDocs=await Campground.countDocuments();
+
+    const totalPage = Math.ceil(totalDocs / limit);
+    const campgrounds = await Campground.find({})
+    .limit(limit)
+    .skip((limit * page) - limit);
+
+
+    console.log('totalPage = ',totalPage);
+    console.log('page = ',page)
+    console.log('=============');
+
+    // campgrounds = campgrounds.limit(2)
+    // campgrounds = campgrounds.skip((2 * page) - 2);
+
+    // const totalPage = campgrounds.length;
+    // .limit(10)
+    // .skip((10*page) - 10);
+    // console.log(campgrounds.length);
+    res.render('campgrounds/home.ejs', { campgrounds, totalPage, page, totalDocs });
 }
 
 module.exports.showCampground = async (req, res) => {

@@ -67,7 +67,7 @@
     pointer-events: none;
 }
 
-a {
+a.pagination\:number {
     text-decoration: none;
     color: white;
 }

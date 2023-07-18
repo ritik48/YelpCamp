@@ -1,0 +1,85 @@
+@import url('https://rsms.me/inter/inter.css');
+
+@supports (font-variation-settings: normal) {
+    html {
+        font-family: 'Inter var', sans-serif;
+    }
+}
+
+
+.hide {
+
+    display: none;
+    visibility: hidden;
+    height: 0;
+}
+
+.pagination-wrapper {
+    --bg-page: #0d0d0d;
+    --text-color: #f3f3f3;
+    background:var(--bg-page);
+    color:var(--text-color);
+
+}
+
+.pagination\:container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow\:text {
+  display: block;
+  font-size: 13px;
+}
+
+.pagination\:number {
+  --size: 32px;
+  --margin: 6px;
+  margin: 0 var(--margin);
+  border-radius: 6px;
+  background: #202020;
+  max-width: auto;
+  min-width: var(--size);
+  height: var(--size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0 6px;
+  @media (hover: hover) {
+    &:hover {
+      background: lighten(#202020, 3%);
+    }
+  }
+  &:active {
+      background: lighten(#202020, 3%);
+  }
+}
+
+.active {
+  background-color: rgb(51, 114, 172);
+  box-shadow: 0 0 3px 1px white;
+}
+
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+@media screen and (max-width: 370px) {
+    .arrow\:text {
+        display: none;
+    }
+
+    .pagination\:number {
+        --size: 30px;
+        --margin: 5px;
+      }
+
+}

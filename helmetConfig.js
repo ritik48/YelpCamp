@@ -15,7 +15,8 @@ const styleSrcUrls = [
     "https://fonts.googleapis.com/",
     "https://use.fontawesome.com/",
     "https://cdn.jsdelivr.net/",
-    "https://res.cloudinary.com/dv5vm4sqh/"
+    "https://res.cloudinary.com/dv5vm4sqh/",
+    "https://rsms.me/inter/inter.css"
 ];
 const connectSrcUrls = [
     "https://*.tiles.mapbox.com",
@@ -23,7 +24,7 @@ const connectSrcUrls = [
     "https://events.mapbox.com",
     "https://res.cloudinary.com/dv5vm4sqh/"
 ];
-const fontSrcUrls = [ "https://res.cloudinary.com/dv5vm4sqh/" ];
+const fontSrcUrls = [ "https://res.cloudinary.com/dv5vm4sqh/","https://rsms.me/"];
 
 module.exports = {
     scriptSrcUrls, styleSrcUrls, connectSrcUrls, fontSrcUrls

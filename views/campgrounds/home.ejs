@@ -10,6 +10,8 @@
 
         <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
         <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    
+        <link rel="stylesheet" href="/stylesheets/pagination.css">
     <style>
         
         .hero-section {
@@ -102,7 +104,7 @@
     
     
     
-    <p>Showing : Page <%= page %> of <%= totalDocs %> Campgrounds</p>
+    <p class="fw-bolder">Showing : Page <%= page %> of <%= totalDocs %> Campgrounds</p>
     <% for(let campground of campgrounds) { %>
         <div class="card mb-3">
             <div class="row">
@@ -129,8 +131,8 @@
         </div>
     <% } %>
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
+    <!-- <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center dark">
           <li class="page-item <%= page==1?'disabled':'' %>">
             <a class="page-link" href="?page=<%= page==1?'':page-1 %>" tabindex="-1">Previous</a>
           </li>
@@ -202,10 +204,68 @@
             <a class="page-link" href="?page=<%= page==totalPage?'':page+1 %>">Next</a>
           </li>
         </ul>
-      </nav>
+      </nav> -->
     
     
     </main>
+
+    <div class="pagination-wrapper py-4">
+        <div class="container pagination:container">
+        <a class="pagination:number arrow <%= page==1?'disabled':'' %>" href="?page=<%= page-1 %>">
+          <svg width="18" height="18">
+            <use xlink:href="#left" />
+          </svg>
+          <span class="arrow:text">Previous</span> 
+        </a>
+       
+        <% if(page>=1 && page<=4) { %>
+            <% for(let i=1;i<=4 && page<totalPage;i++) { %>
+                <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
+                    <%= i %>
+                </a>
+            <% } %>
+
+            <a class="pagination:number" href="?page=<%= totalPage %>">
+                <%= totalPage %>
+              </a>
+        <% } else if(page>4 && page<=totalPage-3) { %>
+            <a class="pagination:number" href="?page=1">
+                1
+            </a>
+            <% for(let i=page-1;i<=page+1;i++) { %>
+                <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
+                    <%= i %>
+                </a>
+            <% } %>
+            <a class="pagination:number" href="?page=<%= totalPage %>">
+                <%= totalPage %>
+            </a>
+        <% } else { %>
+            <a class="pagination:number" href="?page=1">
+                1
+            </a>
+            <% for(let i=totalPage-3;i<=totalPage;i++) { %>
+                <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
+                    <%= i %>
+                </a>
+            <% } %>
+        <% } %>
+
+        
+        
+        <a class="pagination:number arrow <%= page==totalPage?'disabled':'' %>" href="?page=<%= page+1 %>">
+          <svg width="18" height="18">
+            <use xlink:href="#right" />
+          </svg>
+        </a>
+    </div>
+      </div>
+      
+      <svg class="hide">
+        <symbol id="left" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></symbol>
+        <symbol id="right" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></symbol>
+      </svg>
+
     <%- include('../partials/footer') %>
         
         <script>

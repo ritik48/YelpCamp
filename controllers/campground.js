@@ -3,6 +3,7 @@ const Campground=require('../models/campground');
 
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const ExpressError = require('../utils/ExpressError');
 const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
 
@@ -11,27 +12,25 @@ module.exports.renderIndex = async (req, res) => {
 
     let page = parseInt(req.query.page);
     if(!page) page = 1;
-    
+
     const totalDocs=await Campground.countDocuments();
-
     const totalPage = Math.ceil(totalDocs / limit);
-    const campgrounds = await Campground.find({})
-    .limit(limit)
-    .skip((limit * page) - limit);
 
+    if(page != 1 && page > totalPage) {
+        throw new ExpressError('No results for this page !!!', 404);
+    }
+
+    const allCampgrounds = await Campground.find({});
+
+    const startIndex = (limit * page) - limit;
+    const endIndex = startIndex + limit;
+    const campgrounds = allCampgrounds.slice(startIndex, endIndex);
 
     console.log('totalPage = ',totalPage);
     console.log('page = ',page)
     console.log('=============');
 
-    // campgrounds = campgrounds.limit(2)
-    // campgrounds = campgrounds.skip((2 * page) - 2);
-
-    // const totalPage = campgrounds.length;
-    // .limit(10)
-    // .skip((10*page) - 10);
-    // console.log(campgrounds.length);
-    res.render('campgrounds/home.ejs', { campgrounds, totalPage, page, totalDocs });
+    res.render('campgrounds/home.ejs', { allCampgrounds, campgrounds, totalPage, page, totalDocs });
 }
 
 module.exports.showCampground = async (req, res) => {

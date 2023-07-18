@@ -30,7 +30,7 @@ mongoose.set('strictQuery', false);
 const path=require('path');
 
 
-const dbURL = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelp-camp';
+const dbURL = 'mongodb://127.0.0.1:27017/yelp-camp';
 mongoose.connect(dbURL)
 .then(() => console.log("DATABASE CONNECTED."))
 .catch((err) => console.log("DATABASE ERROR !!!"))

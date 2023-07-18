@@ -16,6 +16,7 @@ const campgroundRoutes = require('./Routes/campground');
 const reviewRoutes = require('./Routes/review');
 const userRoutes = require('./Routes/users'); 
 
+const MongoStore = require('connect-mongo');
 const session = require('express-session');
 const flash = require('connect-flash');
 
@@ -29,7 +30,8 @@ mongoose.set('strictQuery', false);
 const path=require('path');
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp')
+const dbURL = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelp-camp';
+mongoose.connect(dbURL)
 .then(() => console.log("DATABASE CONNECTED."))
 .catch((err) => console.log("DATABASE ERROR !!!"))
 
@@ -44,10 +46,15 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
+const store = MongoStore.create({
+    mongoUrl: dbURL,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: 'thisshouldbeabettersecret!'
+    }
+})
 
 // ====================== HELMET ==============================
-
-
  
 app.use(
     helmet.contentSecurityPolicy({
@@ -75,6 +82,7 @@ app.use(
 // =========================================================
 
 const sessionConfig = {
+    store,
     secret: 'thisshouldbeabettersecret!',
     resave: false,
     saveUninitialized: true,

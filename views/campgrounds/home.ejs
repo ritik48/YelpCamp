@@ -211,49 +211,51 @@
 
     <div class="pagination-wrapper py-4">
         <div class="container pagination:container">
-        <a class="pagination:number arrow <%= page==1?'disabled':'' %>" href="?page=<%= page-1 %>">
+        <a class="pagination:number arrow <%= (page==1) || (totalPage==0)?'disabled':'' %>" href="?page=<%= page-1 %>">
           <svg width="18" height="18">
             <use xlink:href="#left" />
           </svg>
           <span class="arrow:text">Previous</span> 
         </a>
-       
-        <% if(page>=1 && page<=4) { %>
-            <% for(let i=1;i<=4 && page<totalPage;i++) { %>
-                <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
-                    <%= i %>
-                </a>
-            <% } %>
+        
+        <% if(totalPage > 0) { %>
+            <% if(page>=1 && page<=4) { %>
+                <% for(let i=1;i<=4 && page<totalPage;i++) { %>
+                    <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
+                        <%= i %>
+                    </a>
+                <% } %>
 
-            <a class="pagination:number" href="?page=<%= totalPage %>">
-                <%= totalPage %>
-              </a>
-        <% } else if(page>4 && page<=totalPage-3) { %>
-            <a class="pagination:number" href="?page=1">
-                1
-            </a>
-            <% for(let i=page-1;i<=page+1;i++) { %>
-                <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
-                    <%= i %>
+                <a class="pagination:number" href="?page=<%= totalPage %>">
+                    <%= totalPage %>
                 </a>
-            <% } %>
-            <a class="pagination:number" href="?page=<%= totalPage %>">
-                <%= totalPage %>
-            </a>
-        <% } else { %>
-            <a class="pagination:number" href="?page=1">
-                1
-            </a>
-            <% for(let i=totalPage-3;i<=totalPage;i++) { %>
-                <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
-                    <%= i %>
+            <% } else if(page>4 && page<=totalPage-3) { %>
+                <a class="pagination:number" href="?page=1">
+                    1
                 </a>
+                <% for(let i=page-1;i<=page+1;i++) { %>
+                    <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+                <a class="pagination:number" href="?page=<%= totalPage %>">
+                    <%= totalPage %>
+                </a>
+            <% } else { %>
+                <a class="pagination:number" href="?page=1">
+                    1
+                </a>
+                <% for(let i=totalPage-3;i<=totalPage;i++) { %>
+                    <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
+                        <%= i %>
+                    </a>
+                <% } %>
             <% } %>
         <% } %>
 
         
         
-        <a class="pagination:number arrow <%= page==totalPage?'disabled':'' %>" href="?page=<%= page+1 %>">
+        <a class="pagination:number arrow <%= (page==totalPage) || (totalPage==0)?'disabled':'' %>" href="?page=<%= page+1 %>">
           <svg width="18" height="18">
             <use xlink:href="#right" />
           </svg>

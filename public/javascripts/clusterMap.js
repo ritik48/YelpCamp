@@ -4,7 +4,7 @@ const map = new mapboxgl.Map({
     container: 'map',
     // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
     style: 'mapbox://styles/mapbox/light-v11',
-    center: [-103.5917, 40.6699],
+    center: [79.09161285760794, 21.153756156865047],
     zoom: 3
 });
 console.log(campgrounds)
@@ -103,11 +103,15 @@ map.on('load', () => {
     // the location of the feature, with
     // description HTML from its properties.
     map.on('click', 'unclustered-point', (e) => {
+        
         const coordinates = e.features[0].geometry.coordinates.slice();
+ 
         // const mag = e.features[0].properties.mag;
         // const tsunami =
         //     e.features[0].properties.tsunami === 1 ? 'yes' : 'no';
+      
         const { markup } = e.features[0].properties;
+        
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
         // popup appears over the copy being pointed to.

@@ -53,6 +53,13 @@ module.exports.editCampground = async (req, res, next) => {
     const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground});
     const imgs = req.files.map(f => ({"url": f.path, "filename": f.filename}));
 
+    // update location
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+    }).send()
+    campground.geometry = geoData.body.features[0].geometry;
+
     campground.image.push(...imgs);
     await campground.save();
 

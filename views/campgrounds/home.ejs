@@ -150,11 +150,11 @@
             <span class="arrow:text">Previous</span> 
             </a>
             
-            <% if(totalPage > 0) { %>
+            <% if(totalPage > 0 && totalPage > 4) { %>
                 <% if(page>=1 && page<=4) { %>
                     <% for(let i=1;i<=4 && page<totalPage;i++) { %>
                         <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
-                            <%= i %>
+                            <%= i %>    
                         </a>
                     <% } %>
 
@@ -182,6 +182,14 @@
                             <%= i %>
                         </a>
                     <% } %>
+                <% } %>
+            <% } %>
+
+            <% if(totalPage <= 4) { %>
+                <% for(let i=1;i<=totalPage;i++) { %>
+                    <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
+                        <%= i %>
+                    </a>
                 <% } %>
             <% } %>
 

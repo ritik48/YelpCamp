@@ -8,10 +8,13 @@ const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
 
 module.exports.renderIndex = async (req, res) => {
-    let limit = 10;
+    let limit = 9;
 
     let page = parseInt(req.query.page);
-    if(!page) page = 1;
+    if(!page || page < 0) page = 1;
+
+    console.log(page)
+
 
     const totalDocs=await Campground.countDocuments();
     const totalPage = Math.ceil(totalDocs / limit);
@@ -25,10 +28,6 @@ module.exports.renderIndex = async (req, res) => {
     const startIndex = (limit * page) - limit;
     const endIndex = startIndex + limit;
     const campgrounds = allCampgrounds.slice(startIndex, endIndex);
-
-    console.log('totalPage = ',totalPage);
-    console.log('page = ',page)
-    console.log('=============');
 
     res.render('campgrounds/home.ejs', { allCampgrounds, campgrounds, totalPage, page, totalDocs });
 }

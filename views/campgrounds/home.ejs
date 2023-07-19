@@ -58,7 +58,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
+            color: white !important;
             width: 35%;
             z-index: 2;
             text-align: center;
@@ -106,178 +106,99 @@
     </div>
     <h1 class="title">All Campgrounds</h1>
     <div id="map" style="width:100%; height: 400px"></div>
-    <main class="container mt-3" id="allcamps">
+    <main class="container mt-3 row mx-auto" id="allcamps">
         <%- include('../partials/flash') %>
     
     
-    <% if(totalDocs != 0) { %>
-        <p class="fw-bolder">Showing : Page <%= page %> of <%= totalDocs %> Campgrounds</p>
-    <% } else { %>
-        <p class="fw-bolder"> No camps around the world 😥</p>
-    <% } %>
+        <% if(totalDocs != 0) { %>
+            <p class="fw-bolder">Showing : Page <%= page %> of <%= totalDocs %> Campgrounds</p>
+        <% } else { %>
+            <p class="fw-bolder"> No camps around the world 😥</p>
+        <% } %>
 
-    <% for(let campground of campgrounds) { %>
-        <div class="card mb-3">
-            <div class="row">
-                <div class="col-md-4">
-                    <% if(campground.image.length) { %>
-                    <img src="<%= campground.image[0].resize %>" class="card-img-top img-fluid" alt="...">
-                    <% } else {%>
-                        <img src="https://res.cloudinary.com/dlqqygobp/image/upload/c_fill,w_500,h_300/v1688574778/spenser-sembrat-zVJSJVGAgYs-unsplash_chthvp.jpg" class="card-img-top img-fluid" alt="...">
-                    <% } %>
+        <% for(let campground of campgrounds) { %>
+            <div class="col-lg-4 col-md-6">
+                <div class="card card-blog">
+                    <div class="card-image">
+                        <a href="/campgrounds/<%= campground.id %>"> 
+                            <% if(campground.image.length) { %>
+                                <img src="<%= campground.image[0].resize %>" class="camp-img card-img-top img-fluid" alt="...">
+                            <% } else {%>
+                                    <img src="https://res.cloudinary.com/dlqqygobp/image/upload/c_fill,w_500,h_300/v1688574778/spenser-sembrat-zVJSJVGAgYs-unsplash_chthvp.jpg" class="card-img-top img-fluid" alt="...">
+                            <% } %>
+                            <div class="camp-overlay"></div>
+                            <div class="card-caption"><%= campground.title %></div>
+                        </a>
+                        <div class="ripple-cont"></div>
                     </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <%= campground.title %>
-                        </h5>
-                        <p class="card-text">
-                            <%= campground.description %>
-                        </p>
-                        <p><small style="color:grey; font-weight: bold;"><%= campground.location %></small></p>
+                    <div class="table">
+                        <p class="card-description"><%= campground.description.substring(0, 151) %><% if(campground.description.length > 150) { %>...<% } %></p>
+                        <p class="camp-location"><span class="location-icon"></span><small style="color:grey; font-weight: bold;"><%= campground.location %></small></p>
                         <a href="/campgrounds/<%= campground.id %>" class="btn btn-primary">Show Campground</a>
                     </div>
                 </div>
             </div>
-        </div>
-    <% } %>
-
-    <!-- <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center dark">
-          <li class="page-item <%= page==1?'disabled':'' %>">
-            <a class="page-link" href="?page=<%= page==1?'':page-1 %>" tabindex="-1">Previous</a>
-          </li>
-
-          <% if(page > 1 && page < totalPage) { %>
-            <% for(let i=1;i<=1;i++) { %>
-                <li class="page-item">
-                    <a class="page-link" href='?page=<%= i %>' style="<%= page==i? 'background-color: #1686ba; color: white':''%>">
-                        <%= i %>
-                    </a>
-                </li>
-            <% } %>
-
-            <li class="page-item">   
-                <a class="page-link" href='#'>
-                    ...
-                </a>
-            </li>
-                
-            <% for(let i=page;i<=page;i++) { %>
-                <li class="page-item">
-                    <a class="page-link" href='?page=<%= i %>' style="<%= page==i? 'background-color: #1686ba; color: white':''%>">
-                        <%= i %>
-                    </a>
-                </li>
-            <% } %>
-
-            <li class="page-item">
-                <a class="page-link" href='#'>
-                    ...
-                </a>
-            </li>
-
-            <% for(let i=totalPage;i<=totalPage;i++) { %>
-                <li class="page-item">
-                    <a class="page-link" href='?page=<%= i %>' style="<%= page==i? 'background-color: #1686ba; color: white':''%>">
-                        <%= i %>
-                    </a>
-                </li>
-            <% } %>
-          <% } else { %>
-                <% for(let i=1;i<=1;i++) { %>
-                    <li class="page-item">
-                        <a class="page-link" href='?page=<%= i %>' style="<%= page==i? 'background-color: #1686ba; color: white':''%>">
-                            <%= i %>
-                        </a>
-                    </li>
-                <% } %>
-
-                <li class="page-item">
-                    <a class="page-link" href='#'>
-                        ...
-                    </a>
-                </li>
-
-                <% for(let i=totalPage;i<=totalPage;i++) { %>
-                    <li class="page-item">
-                        <a class="page-link" href='?page=<%= i %>' style="<%= page==i? 'background-color: #1686ba; color: white':''%>">
-                            <%= i %>
-                        </a>
-                    </li>
-                <% } %>
-            <% } %>
-        
-
-
-
-          <li class="page-item <%= page==totalPage?'disabled':'' %>">
-            <a class="page-link" href="?page=<%= page==totalPage?'':page+1 %>">Next</a>
-          </li>
-        </ul>
-      </nav> -->
-    
-    
+        <% } %>
     </main>
 
     <div class="pagination-wrapper py-4">
         <div class="container pagination:container">
-        <a class="pagination:number arrow <%= (page==1) || (totalPage==0)?'disabled':'' %>" href="?page=<%= page-1 %>">
-          <svg width="18" height="18">
-            <use xlink:href="#left" />
-          </svg>
-          <span class="arrow:text">Previous</span> 
-        </a>
-        
-        <% if(totalPage > 0) { %>
-            <% if(page>=1 && page<=4) { %>
-                <% for(let i=1;i<=4 && page<totalPage;i++) { %>
-                    <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
-                        <%= i %>
-                    </a>
-                <% } %>
+            <a class="pagination:number arrow <%= (page==1) || (totalPage==0)?'disabled':'' %>" href="?page=<%= page-1 %>">
+            <svg width="18" height="18">
+                <use xlink:href="#left" />
+            </svg>
+            <span class="arrow:text">Previous</span> 
+            </a>
+            
+            <% if(totalPage > 0) { %>
+                <% if(page>=1 && page<=4) { %>
+                    <% for(let i=1;i<=4 && page<totalPage;i++) { %>
+                        <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
+                            <%= i %>
+                        </a>
+                    <% } %>
 
-                <a class="pagination:number" href="?page=<%= totalPage %>">
-                    <%= totalPage %>
-                </a>
-            <% } else if(page>4 && page<=totalPage-3) { %>
-                <a class="pagination:number" href="?page=1">
-                    1
-                </a>
-                <% for(let i=page-1;i<=page+1;i++) { %>
-                    <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
-                        <%= i %>
+                    <a class="pagination:number" href="?page=<%= totalPage %>">
+                        <%= totalPage %>
                     </a>
-                <% } %>
-                <a class="pagination:number" href="?page=<%= totalPage %>">
-                    <%= totalPage %>
-                </a>
-            <% } else { %>
-                <a class="pagination:number" href="?page=1">
-                    1
-                </a>
-                <% for(let i=totalPage-3;i<=totalPage;i++) { %>
-                    <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
-                        <%= i %>
+                <% } else if(page>4 && page<=totalPage-3) { %>
+                    <a class="pagination:number" href="?page=1">
+                        1
                     </a>
+                    <% for(let i=page-1;i<=page+1;i++) { %>
+                        <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
+                            <%= i %>
+                        </a>
+                    <% } %>
+                    <a class="pagination:number" href="?page=<%= totalPage %>">
+                        <%= totalPage %>
+                    </a>
+                <% } else { %>
+                    <a class="pagination:number" href="?page=1">
+                        1
+                    </a>
+                    <% for(let i=totalPage-3;i<=totalPage;i++) { %>
+                        <a class="pagination:number <%= page==i?'active':'' %>" href="?page=<%= i %>">
+                            <%= i %>
+                        </a>
+                    <% } %>
                 <% } %>
             <% } %>
-        <% } %>
 
         
         
-        <a class="pagination:number arrow <%= (page==totalPage) || (totalPage==0)?'disabled':'' %>" href="?page=<%= page+1 %>">
-          <svg width="18" height="18">
-            <use xlink:href="#right" />
-          </svg>
-        </a>
+            <a class="pagination:number arrow <%= (page==totalPage) || (totalPage==0)?'disabled':'' %>" href="?page=<%= page+1 %>">
+                <svg width="18" height="18">
+                    <use xlink:href="#right" />
+                </svg>
+            </a>
+        </div>
     </div>
-      </div>
       
-      <svg class="hide">
-        <symbol id="left" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></symbol>
-        <symbol id="right" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></symbol>
-      </svg>
+    <svg class="hide">
+    <symbol id="left" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></symbol>
+    <symbol id="right" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></symbol>
+    </svg>
 
     <%- include('../partials/footer') %>
         

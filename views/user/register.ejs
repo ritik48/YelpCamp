@@ -1,31 +1,81 @@
 <%- layout('layouts/boilerplate') %>
 <!-- <h1 class="text-muted my-4 border border-success w-auto">Register on <i><u>YelpCamp</u></i></h1> -->
+<style>
+    .img-cont{
+        position: relative;
+    }
+    .page-title {
+        position: absolute;
+        
+        bottom: 10px;
+        left: 10px;
+        color: white;
+    }
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.633));
+    }
+    .pwd-label {
+        margin: 0;
+    }
+    .label-wrapper {
+        border: 1px solid red;
+        margin-bottom: 8px;
+        align-items: center;
+    }
+    .password-strength {
+        margin-left: 14px;
+    }
+    .strength{
+        width: 25%;
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        /* bottom: 100%; */
+        border-radius: inherit;
+    }
+    #strength-bar{
+        background-color: #dcdcdc;
+        height: 10px;
+        position: relative;
+        margin-top: 15px;
+        border-radius: 3px;
+    }
+</style>
 <div class="container d-flex justify-content-center align-items-center">
     <div class="row my-1">
         <div class="col-8 offset-2 col-md-6 offset-md-3 col-xl-6 offset-xl-3">
             <div class="card shadow">
-                <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=687&q=80"
+                <div class="img-cont">
+                    <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=687&q=80"
                     alt="" class="card-img-top d-inline h-30" />
+                    <div class="overlay"></div>
+                    <h4 class="page-title">Register</h4>
+                </div>
+                
                 <div class="card-body">
-                    <h5 class="card-title">Register</h5>
+                    <!-- <h5 class="card-title">Register</h5> -->
                     <form action="/register" method="POST" class="validated-form" novalidate>
-                        <div class="mb-3">
+                        <div class="mb-2">
                             <label class="form-label" for="username">Username</label>
-                            <input class="form-control" type="text" id="username" name="username" required autofocus>
+                            <input placeholder="User" class="form-control" type="text" id="username" name="username" required autofocus>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-2">
                             <label class="form-label" for="email">Email</label>
-                            <input class="form-control" type="email" id="email" name="email" required>
+                            <input placeholder="Email" class="form-control" type="email" id="email" name="email" required>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="password">Password</label>
-                            <input class="form-control" type="password" id="password" name="password" required>
+                        <div class="mb-2">
+                            <input class="form-control password" type="text" id="password" name="password" placeholder="Password" required>
+                            <div id="strength-bar"></div>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -38,3 +88,77 @@
         </div>
     </div>
 </div>
+
+<script>
+    let parameters = {
+        count : false,
+        letters : false,
+        numbers : false,
+        special : false
+    }
+    //A constant of the id of the progressbar is set.
+    let strengthBar = document.getElementById("strength-bar");
+    const passwordInp = document.querySelector('.password')
+
+    passwordInp.addEventListener('input', strengthChecker);
+
+    let width=0;
+
+    const btn = document.querySelector('.btn');
+
+    function strengthChecker(){
+        //The value of the input box has been collected and stored in a constant called ‘password’.  
+        let passwordInp = document.getElementById("password");
+        let password = passwordInp.value;
+
+        if(password.length > 15) {
+            passwordInp.value = password.substring(0, 15);
+            return;
+        }
+
+        //Now the values ​​of the parameters have been added.
+        parameters.letters = (/[A-Za-z]+/.test(password))?true:false;
+        parameters.numbers = (/[0-9]+/.test(password))?true:false;
+        parameters.special = (/[!\"$%&/()=?@~`\\.\'';:+=^*_-]+/.test(password))?true:false;
+        parameters.count = (password.length > 7)?true:false;
+        let barLength = Object.values(parameters).filter(value=>value);
+        // console.log(Object.values(parameters), barLength);
+        strengthBar.innerHTML = "";
+
+        width = 0;
+        for( let i in barLength){
+            width+=25;
+            let span = document.createElement("span");
+            span.classList.add("strength");
+            strengthBar.appendChild(span);
+            span.style.width = `${width}%`;
+            
+        }
+
+        if(width < 75) {
+            console.log('yess');
+            btn.disabled = true
+        } else {
+            btn.disabled = false;
+            console.log(width)
+        }
+        //Here 4 types of parameters have been used so 4 types of cases can be seen. A different background color is used for each step.
+        let spanRef = document.getElementsByClassName("strength");
+        for( let i = 0; i < spanRef.length; i++){
+            switch(spanRef.length - 1){
+                case 0 :
+                    spanRef[i].style.background = "#ff3e36";
+                    break;
+                case 1:
+                    spanRef[i].style.background = "#ff691f";
+                    break;
+                case 2:
+                    spanRef[i].style.background = "#ffda36";
+                    break;
+                case 3:
+                    spanRef[i].style.background = "#0be881";
+                    break;
+            }
+        }
+    }
+</script>

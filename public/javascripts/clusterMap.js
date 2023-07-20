@@ -123,7 +123,9 @@ map.on('load', () => {
             .setLngLat(coordinates)
             .setHTML(markup)
             .addTo(map);
-    });
+    }); 
+
+    map.addControl(new mapboxgl.NavigationControl());
 
     map.on('mouseenter', 'clusters', () => {
         map.getCanvas().style.cursor = 'pointer';
